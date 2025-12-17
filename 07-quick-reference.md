@@ -6,81 +6,81 @@ Cheat sheets, gotchas, and advice for when you're stuck.
 
 ### Syntax
 
-| Go | Rust |
-|----|------|
-| `var x int = 5` | `let x: i32 = 5;` |
-| `x := 5` | `let x = 5;` |
-| `const X = 5` | `const X: i32 = 5;` |
-| `var x int` (zero value) | Not allowed—must initialize |
-| `func foo(x int) int` | `fn foo(x: i32) -> i32` |
-| `func (t T) method()` | `impl T { fn method(&self) }` |
-| `if x > 0 { }` | `if x > 0 { }` (same) |
-| `for i := 0; i < 10; i++` | `for i in 0..10` |
-| `for i, v := range slice` | `for (i, v) in slice.iter().enumerate()` |
-| `for _, v := range slice` | `for v in &slice` |
-| `switch x { case 1: }` | `match x { 1 => { } }` |
-| `x.(Type)` | `match x { }` or downcast |
-| `go func() { }()` | `thread::spawn(\|\| { })` |
-| `defer cleanup()` | Automatic via `Drop` |
-| `make([]T, n)` | `vec![default; n]` or `Vec::with_capacity(n)` |
-| `make(map[K]V)` | `HashMap::new()` |
-| `make(chan T)` | `mpsc::channel()` |
-| `ch <- v` | `tx.send(v)` |
-| `v := <-ch` | `rx.recv()` |
-| `close(ch)` | `drop(tx)` |
+| Go                        | Rust                                          |
+| ------------------------- | --------------------------------------------- |
+| `var x int = 5`           | `let x: i32 = 5;`                             |
+| `x := 5`                  | `let x = 5;`                                  |
+| `const X = 5`             | `const X: i32 = 5;`                           |
+| `var x int` (zero value)  | Not allowed—must initialize                   |
+| `func foo(x int) int`     | `fn foo(x: i32) -> i32`                       |
+| `func (t T) method()`     | `impl T { fn method(&self) }`                 |
+| `if x > 0 { }`            | `if x > 0 { }` (same)                         |
+| `for i := 0; i < 10; i++` | `for i in 0..10`                              |
+| `for i, v := range slice` | `for (i, v) in slice.iter().enumerate()`      |
+| `for _, v := range slice` | `for v in &slice`                             |
+| `switch x { case 1: }`    | `match x { 1 => { } }`                        |
+| `x.(Type)`                | `match x { }` or downcast                     |
+| `go func() { }()`         | `thread::spawn(\|\| { })`                     |
+| `defer cleanup()`         | Automatic via `Drop`                          |
+| `make([]T, n)`            | `vec![default; n]` or `Vec::with_capacity(n)` |
+| `make(map[K]V)`           | `HashMap::new()`                              |
+| `make(chan T)`            | `mpsc::channel()`                             |
+| `ch <- v`                 | `tx.send(v)`                                  |
+| `v := <-ch`               | `rx.recv()`                                   |
+| `close(ch)`               | `drop(tx)`                                    |
 
 ### Types
 
-| Go | Rust |
-|----|------|
-| `int`, `int64` | `i32`, `i64` (explicit size) |
-| `uint`, `uint64` | `u32`, `u64` |
-| `float64` | `f64` |
-| `string` | `String` (owned) or `&str` (borrowed) |
-| `[]T` | `Vec<T>` (owned) or `&[T]` (slice) |
-| `[N]T` | `[T; N]` |
-| `map[K]V` | `HashMap<K, V>` |
-| `*T` | `&T`, `&mut T`, `Box<T>` (depends on use) |
-| `interface{}` / `any` | `dyn Any` or generics |
-| `nil` | `None` (in `Option<T>`) |
-| `error` | `Result<T, E>` |
+| Go                    | Rust                                      |
+| --------------------- | ----------------------------------------- |
+| `int`, `int64`        | `i32`, `i64` (explicit size)              |
+| `uint`, `uint64`      | `u32`, `u64`                              |
+| `float64`             | `f64`                                     |
+| `string`              | `String` (owned) or `&str` (borrowed)     |
+| `[]T`                 | `Vec<T>` (owned) or `&[T]` (slice)        |
+| `[N]T`                | `[T; N]`                                  |
+| `map[K]V`             | `HashMap<K, V>`                           |
+| `*T`                  | `&T`, `&mut T`, `Box<T>` (depends on use) |
+| `interface{}` / `any` | `dyn Any` or generics                     |
+| `nil`                 | `None` (in `Option<T>`)                   |
+| `error`               | `Result<T, E>`                            |
 
 ### Error Handling
 
-| Go | Rust |
-|----|------|
-| `val, err := foo()` | `let val = foo()?;` or `match foo() { }` |
-| `if err != nil { return err }` | `?` |
-| `if err != nil { return fmt.Errorf(...) }` | `.map_err(\|e\| ...)?` |
-| `errors.Is(err, target)` | `matches!(err, ...)` or downcast |
-| `panic("msg")` | `panic!("msg")` |
-| `recover()` | `catch_unwind` (rarely used) |
+| Go                                         | Rust                                     |
+| ------------------------------------------ | ---------------------------------------- |
+| `val, err := foo()`                        | `let val = foo()?;` or `match foo() { }` |
+| `if err != nil { return err }`             | `?`                                      |
+| `if err != nil { return fmt.Errorf(...) }` | `.map_err(\|e\| ...)?`                   |
+| `errors.Is(err, target)`                   | `matches!(err, ...)` or downcast         |
+| `panic("msg")`                             | `panic!("msg")`                          |
+| `recover()`                                | `catch_unwind` (rarely used)             |
 
 ### Common Operations
 
-| Go | Rust |
-|----|------|
-| `len(s)` | `s.len()` |
-| `append(slice, item)` | `vec.push(item)` |
-| `copy(dst, src)` | `dst.copy_from_slice(&src)` |
-| `strings.Contains(s, sub)` | `s.contains(sub)` |
-| `strings.Split(s, sep)` | `s.split(sep)` |
-| `strconv.Itoa(n)` | `n.to_string()` |
-| `strconv.Atoi(s)` | `s.parse::<i32>()` |
-| `fmt.Sprintf("%v", x)` | `format!("{:?}", x)` |
-| `fmt.Println(x)` | `println!("{x}")` or `println!("{x:?}")` |
-| `json.Marshal(v)` | `serde_json::to_string(&v)` |
-| `json.Unmarshal(data, &v)` | `serde_json::from_str(data)` |
+| Go                         | Rust                                     |
+| -------------------------- | ---------------------------------------- |
+| `len(s)`                   | `s.len()`                                |
+| `append(slice, item)`      | `vec.push(item)`                         |
+| `copy(dst, src)`           | `dst.copy_from_slice(&src)`              |
+| `strings.Contains(s, sub)` | `s.contains(sub)`                        |
+| `strings.Split(s, sep)`    | `s.split(sep)`                           |
+| `strconv.Itoa(n)`          | `n.to_string()`                          |
+| `strconv.Atoi(s)`          | `s.parse::<i32>()`                       |
+| `fmt.Sprintf("%v", x)`     | `format!("{:?}", x)`                     |
+| `fmt.Println(x)`           | `println!("{x}")` or `println!("{x:?}")` |
+| `json.Marshal(v)`          | `serde_json::to_string(&v)`              |
+| `json.Unmarshal(data, &v)` | `serde_json::from_str(data)`             |
 
 ### Concurrency
 
-| Go | Rust |
-|----|------|
-| `go func() { }()` | `thread::spawn(\|\| { })` |
-| `sync.Mutex` | `Mutex<T>` (wraps the data) |
-| `sync.RWMutex` | `RwLock<T>` |
-| `sync.WaitGroup` | `thread::scope` or join handles |
-| `sync.Once` | `std::sync::Once` or `once_cell` |
+| Go                | Rust                                       |
+| ----------------- | ------------------------------------------ |
+| `go func() { }()` | `thread::spawn(\|\| { })`                  |
+| `sync.Mutex`      | `Mutex<T>` (wraps the data)                |
+| `sync.RWMutex`    | `RwLock<T>`                                |
+| `sync.WaitGroup`  | `thread::scope` or join handles            |
+| `sync.Once`       | `std::sync::Once` or `once_cell`           |
 | `context.Context` | No direct equivalent (see tokio for async) |
 
 ## Common Gotchas for Go Developers
@@ -134,6 +134,7 @@ let c = Config { timeout: 30 };  // ERROR: missing field `retries`
 ```
 
 Options:
+
 - Implement `Default` trait
 - Use builder pattern
 - Fill all fields
@@ -171,6 +172,7 @@ for x in v { }            // x is i32 (consumes v, v is gone)
 ```
 
 Or explicitly:
+
 - `.iter()` → yields `&T` (borrows)
 - `.iter_mut()` → yields `&mut T` (mutable borrows)
 - `.into_iter()` → yields `T` (takes ownership, consumes collection)
@@ -281,6 +283,7 @@ println!("{s}");  // ERROR: s was moved
 ```
 
 **Fixes:**
+
 - Clone before the move: `let s2 = s.clone();`
 - Borrow instead: `let s2 = &s;`
 - Restructure to not need it afterward
@@ -296,6 +299,7 @@ fn take(v: &Vec<String>) -> String {
 ```
 
 **Fixes:**
+
 - Clone: `v[0].clone()`
 - Take ownership of the whole thing: `fn take(v: Vec<String>)`
 - Return a reference: `fn take(v: &Vec<String>) -> &String`
@@ -352,19 +356,19 @@ cargo update             # Update dependencies
 
 ## Essential Crates
 
-| Need | Crate |
-|------|-------|
-| Serialization | `serde`, `serde_json` |
-| HTTP client | `reqwest` |
-| HTTP server | `axum`, `actix-web` |
-| Async runtime | `tokio` |
-| CLI parsing | `clap` |
+| Need           | Crate                               |
+| -------------- | ----------------------------------- |
+| Serialization  | `serde`, `serde_json`               |
+| HTTP client    | `reqwest`                           |
+| HTTP server    | `axum`, `actix-web`                 |
+| Async runtime  | `tokio`                             |
+| CLI parsing    | `clap`                              |
 | Error handling | `anyhow` (apps), `thiserror` (libs) |
-| Logging | `tracing`, `log` |
-| Regex | `regex` |
-| Date/time | `chrono`, `time` |
-| Random | `rand` |
-| Testing | `proptest`, `mockall` |
+| Logging        | `tracing`, `log`                    |
+| Regex          | `regex`                             |
+| Date/time      | `chrono`, `time`                    |
+| Random         | `rand`                              |
+| Testing        | `proptest`, `mockall`               |
 
 Find more at [crates.io](https://crates.io) and [lib.rs](https://lib.rs).
 
