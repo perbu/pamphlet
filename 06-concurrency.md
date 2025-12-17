@@ -1,8 +1,6 @@
 # Chapter 6: Concurrency
 
-Go's concurrency story: "Don't communicate by sharing memory; share memory by communicating." Channels and goroutines, simple mental model, data races are your problem.
-
-Rust's concurrency story: "We'll make data races a compile error."
+Go's concurrency story: "Don't communicate by sharing; share by communicating." Rust's concurrency story: "We'll make data races a compile error."
 
 You know concurrency. This chapter is about how Rust makes it safer.
 
@@ -156,14 +154,14 @@ for received in rx {  // Iterate until all senders dropped
 
 ### Go Comparison
 
-| Go | Rust |
-|----|------|
-| `ch := make(chan int)` | `let (tx, rx) = mpsc::channel()` |
-| `ch := make(chan int, 10)` | `let (tx, rx) = mpsc::sync_channel(10)` |
-| `ch <- value` | `tx.send(value).unwrap()` |
-| `value := <-ch` | `let value = rx.recv().unwrap()` |
-| `close(ch)` | `drop(tx)` (when all senders dropped) |
-| `select { ... }` | No direct equivalent (see crossbeam crate) |
+| Go                         | Rust                                       |
+| -------------------------- | ------------------------------------------ |
+| `ch := make(chan int)`     | `let (tx, rx) = mpsc::channel()`           |
+| `ch := make(chan int, 10)` | `let (tx, rx) = mpsc::sync_channel(10)`    |
+| `ch <- value`              | `tx.send(value).unwrap()`                  |
+| `value := <-ch`            | `let value = rx.recv().unwrap()`           |
+| `close(ch)`                | `drop(tx)` (when all senders dropped)      |
+| `select { ... }`           | No direct equivalent (see crossbeam crate) |
 
 Rust's standard library channels are simpler than Go's. For `select`-style operations, use the `crossbeam` crate.
 
@@ -224,7 +222,7 @@ Breaking it down:
 
 ### Mutex Poisoning
 
-Why all the `.unwrap()` calls on `lock()`? If a thread panics while holding a lock, the mutex becomes *poisoned*. The next thread to call `lock()` gets an `Err` instead of the guard.
+Why all the `.unwrap()` calls on `lock()`? If a thread panics while holding a lock, the mutex becomes _poisoned_. The next thread to call `lock()` gets an `Err` instead of the guard.
 
 ```rust
 let result = counter.lock();  // Returns Result<MutexGuard, PoisonError>
@@ -265,11 +263,13 @@ Key differences:
 ### What Happens If You Forget to Lock?
 
 Go:
+
 ```go
 counter++  // Compiles fine, races at runtime
 ```
 
 Rust:
+
 ```rust
 *counter += 1;  // ERROR: cannot deref Arc<Mutex<i32>>
 ```
@@ -347,12 +347,11 @@ async fn fetch_data() -> Result<String, Error> {
 
 Key differences from Go:
 
-| Aspect | Go | Rust async |
-|--------|-----|------------|
-| Runtime | Built-in (goroutines) | External (tokio, async-std) |
-| Scheduling | Preemptive | Cooperative |
-| Default | Everything is async-ready | Must explicitly use async |
-| Learning curve | Low | Significant |
+| Aspect     | Go                        | Rust async                  |
+| ---------- | ------------------------- | --------------------------- |
+| Runtime    | Built-in (goroutines)     | External (tokio, async-std) |
+| Scheduling | Preemptive                | Cooperative                 |
+| Default    | Everything is async-ready | Must explicitly use async   |
 
 Async Rust is powerful but adds complexity:
 
@@ -363,7 +362,7 @@ Async Rust is powerful but adds complexity:
 
 For many programs, regular threads are simpler. Async shines for high-concurrency I/O (thousands of connections).
 
-This pamphlet won't cover async in depth—it deserves its own guide. Just know it exists and is different from Go's model.
+This pamphlet won't cover async in depth. It deserves its own guide. Just know it exists and is different from Go's model.
 
 ## Common Patterns
 
@@ -417,15 +416,15 @@ CACHE.with(|cache| {
 
 ## Summary
 
-| Concept | Go | Rust |
-|---------|-----|------|
-| Thread primitive | Goroutine (green thread) | `std::thread` (OS thread) |
-| Safety model | Convention + race detector | Compile-time enforcement |
-| Sharing data | Hope you use mutexes right | `Send`/`Sync` traits |
-| Mutex | Separate from data | Wraps the data |
-| Forgetting to lock | Runtime race | Doesn't compile |
-| Channel ownership | Copy/share | Move |
-| Async | Built-in | External runtime |
+| Concept            | Go                         | Rust                      |
+| ------------------ | -------------------------- | ------------------------- |
+| Thread primitive   | Goroutine (green thread)   | `std::thread` (OS thread) |
+| Safety model       | Convention + race detector | Compile-time enforcement  |
+| Sharing data       | Mutexes                    | `Send`/`Sync` traits      |
+| Mutex              | Separate from data         | Wraps the data            |
+| Forgetting to lock | Runtime race               | Doesn't compile           |
+| Channel ownership  | Copy/share                 | Move                      |
+| Async              | Built-in                   | External runtime          |
 
 Rust's concurrency model trades convenience for safety. You can't accidentally share mutable state across threads. The compiler catches it.
 
