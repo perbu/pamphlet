@@ -4,7 +4,7 @@ Go has interfaces. Rust has traits. They look similar, but the differences matte
 
 ## Traits vs Go Interfaces
 
-In Go, interfaces are satisfied implicitly:
+In Go, interfaces are satisfied implicitly. This took me quite a long time to really understand. Also, the name `interface` is really a misnomer. It should be called `contract.
 
 ```go
 type Stringer interface {
@@ -21,7 +21,7 @@ func (p Person) String() string {
 }
 ```
 
-In Rust, traits are implemented explicitly:
+In Rust, _traits_ are implemented explicitly:
 
 ```rust
 trait Display {
@@ -99,11 +99,11 @@ impl MyType {
 
 Go comparison:
 
-| Rust | Go | When to use |
-|------|-----|-------------|
-| `self` | (no equivalent) | Method consumes the value |
-| `&self` | `func (t T)` | Read-only access |
-| `&mut self` | `func (t *T)` | Need to modify |
+| Rust        | Go              | When to use               |
+| ----------- | --------------- | ------------------------- |
+| `self`      | (no equivalent) | Method consumes the value |
+| `&self`     | `func (t T)`    | Read-only access          |
+| `&mut self` | `func (t *T)`   | Need to modify            |
 
 In Go, you choose between value and pointer receivers. In Rust, ownership rules make the choice clearer.
 
@@ -146,7 +146,7 @@ fn largest<T>(list: &[T]) -> &T {
 }
 ```
 
-This won't compile. Rust doesn't know if `T` can be compared. You need a *trait bound*:
+This won't compile. Rust doesn't know if `T` can be compared. You need a _trait bound_:
 
 ```rust
 fn largest<T: PartialOrd>(list: &[T]) -> &T {
@@ -244,14 +244,16 @@ fn write_data<W: Write>(w: &mut W, data: &[u8]) {
 
 When you call `write_data::<File>()`, Rust generates a specialized version for `File`. When you call `write_data::<TcpStream>()`, it generates another version for `TcpStream`.
 
-This is *monomorphization*—one function in source, multiple specialized functions in the binary.
+This is _monomorphization_—one function in source, multiple specialized functions in the binary.
 
 **Advantages:**
+
 - Zero runtime overhead
 - Enables inlining
 - Faster
 
 **Disadvantages:**
+
 - Larger binary (one copy per type)
 - Longer compile times
 
@@ -265,18 +267,18 @@ fn write_data(w: &mut dyn Write, data: &[u8]) {
 }
 ```
 
-The `dyn Write` is a *trait object*. It's a "fat pointer": a pointer to data plus a pointer to a vtable.
+The `dyn Write` is a _trait object_. It's a "fat pointer": a pointer to data plus a pointer to a vtable.
 
 **Go comparison:** A Go interface value is also two pointers (data + type/vtable), but Go automatically boxes the data (usually on the heap). In Rust, the "fatness" is in the pointer itself—the data stays where it is. With generics, there's no fat pointer at all; with `dyn`, there is.
 
 ### When to Use Each
 
-| Situation | Use | Why |
-|-----------|-----|-----|
-| Performance-critical code | Generics (static) | Zero overhead |
-| Heterogeneous collections | `dyn Trait` | Need to store different types |
-| Public API flexibility | Either, but `dyn` is simpler | Generics expose type params |
-| Small hot loops | Generics | Inlining possible |
+| Situation                 | Use                          | Why                           |
+| ------------------------- | ---------------------------- | ----------------------------- |
+| Performance-critical code | Generics (static)            | Zero overhead                 |
+| Heterogeneous collections | `dyn Trait`                  | Need to store different types |
+| Public API flexibility    | Either, but `dyn` is simpler | Generics expose type params   |
+| Small hot loops           | Generics                     | Inlining possible             |
 
 ### Box<dyn Trait>
 
@@ -417,6 +419,7 @@ struct User {
 This generates sensible implementations based on the struct's fields. Without derive, you'd write pages of boilerplate.
 
 Common derivable traits:
+
 - `Debug`, `Clone`, `Copy` (if all fields are Copy)
 - `PartialEq`, `Eq`, `PartialOrd`, `Ord`
 - `Default`, `Hash`
@@ -455,14 +458,14 @@ Associated types are cleaner when there's only one logical type per implementati
 
 ## Summary
 
-| Concept | Go | Rust |
-|---------|-----|------|
-| Interface/trait | Implicit satisfaction | Explicit `impl Trait for Type` |
-| Method receiver | `(t T)` or `(t *T)` | `self`, `&self`, `&mut self` |
-| Dispatch | Always runtime | Static (generics) or dynamic (`dyn`) |
-| Type constraints | `[T constraints.X]` | `<T: Trait>` or `where T: Trait` |
-| Auto-implement | (doesn't exist) | `#[derive(...)]` |
-| Hetero collections | `[]Interface` | `Vec<Box<dyn Trait>>` |
+| Concept            | Go                    | Rust                                 |
+| ------------------ | --------------------- | ------------------------------------ |
+| Interface/trait    | Implicit satisfaction | Explicit `impl Trait for Type`       |
+| Method receiver    | `(t T)` or `(t *T)`   | `self`, `&self`, `&mut self`         |
+| Dispatch           | Always runtime        | Static (generics) or dynamic (`dyn`) |
+| Type constraints   | `[T constraints.X]`   | `<T: Trait>` or `where T: Trait`     |
+| Auto-implement     | (doesn't exist)       | `#[derive(...)]`                     |
+| Hetero collections | `[]Interface`         | `Vec<Box<dyn Trait>>`                |
 
 Traits are more powerful than Go interfaces: default methods, associated types, static dispatch, derivable implementations. The tradeoff is more explicit ceremony.
 
