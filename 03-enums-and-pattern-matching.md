@@ -1,6 +1,6 @@
 # Chapter 3: Enums and Pattern Matching
 
-Go has enums. Sort of. You fake them with `const` and `iota`:
+Go doesn't have enums. `const` and `iota` are used to simulate enums.
 
 ```go
 type Status int
@@ -15,7 +15,7 @@ Rust has real enums. And they're one of the language's best features.
 
 ## Enums with Data
 
-Rust enums aren't just named constants—each variant can hold different data:
+Rust enums aren't just named constants. Each variant can hold different data:
 
 ```rust
 enum Message {
@@ -26,9 +26,9 @@ enum Message {
 }
 ```
 
-One type, four variants, each with different shapes. Try that with Go's `iota`.
+One type, four variants, each with different shapes. Quite powerful.
 
-This is called an *algebraic data type* (specifically, a *sum type*). If you've used TypeScript's discriminated unions, it's the same idea but with compiler enforcement.
+This is called an _algebraic data type_ (specifically, a _sum type_). If you've used TypeScript's discriminated unions, it's the same idea but with compiler enforcement.
 
 ### Why This Matters
 
@@ -68,7 +68,7 @@ enum Option<T> {
 }
 ```
 
-That's it. A value is either `Some(thing)` or `None`. No null, no nil, no billion-dollar mistake.
+That's it. A value is either `Some(thing)` or `None`. The absence of `nil` is quite something.
 
 ### The Problem with nil
 
@@ -128,11 +128,11 @@ let doubled = maybe_number.map(|n| n * 2);  // Some(10)
 
 ### Go Translation
 
-| Go pattern | Rust pattern |
-|------------|--------------|
-| `*T` that might be nil | `Option<T>` |
-| `val, ok := map[key]` | `map.get(&key)` returns `Option<&V>` |
-| Return `nil` for "not found" | Return `None` |
+| Go pattern                   | Rust pattern                         |
+| ---------------------------- | ------------------------------------ |
+| `*T` that might be nil       | `Option<T>`                          |
+| `val, ok := map[key]`        | `map.get(&key)` returns `Option<&V>` |
+| Return `nil` for "not found" | Return `None`                        |
 
 ## Result<T, E>: Errors Done Right
 
@@ -442,14 +442,14 @@ Compare to how you'd write this in Go with interfaces, type switches, and explic
 
 ## Summary
 
-| Concept | Go Equivalent | Key Difference |
-|---------|---------------|----------------|
-| Enums with data | Interfaces + structs | Single type, compiler-checked |
-| `Option<T>` | `*T` or `val, ok` | Cannot ignore the None case |
-| `Result<T, E>` | `(val, error)` | Cannot ignore the error |
-| `?` operator | `if err != nil { return err }` | One character |
-| `match` | Type switch | Exhaustive, pattern destructuring |
-| `if let` | Type assertion | Concise single-pattern match |
+| Concept         | Go Equivalent                  | Key Difference                    |
+| --------------- | ------------------------------ | --------------------------------- |
+| Enums with data | Interfaces + structs           | Single type, compiler-checked     |
+| `Option<T>`     | `*T` or `val, ok`              | Cannot ignore the None case       |
+| `Result<T, E>`  | `(val, error)`                 | Cannot ignore the error           |
+| `?` operator    | `if err != nil { return err }` | One character                     |
+| `match`         | Type switch                    | Exhaustive, pattern destructuring |
+| `if let`        | Type assertion                 | Concise single-pattern match      |
 
 Enums and pattern matching change how you model data. Instead of interfaces and type switches, you have a closed set of variants that the compiler fully understands.
 
