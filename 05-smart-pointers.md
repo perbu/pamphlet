@@ -152,11 +152,11 @@ for handle in handles {
 
 ### Rc vs Arc
 
-| | Rc<T> | Arc<T> |
-|--|-------|--------|
-| Thread-safe | No | Yes |
-| Performance | Faster | Slight overhead |
-| Use when | Single-threaded shared ownership | Multi-threaded shared ownership |
+|             | Rc<T>                            | Arc<T>                          |
+| ----------- | -------------------------------- | ------------------------------- |
+| Thread-safe | No                               | Yes                             |
+| Performance | Faster                           | Slight overhead                 |
+| Use when    | Single-threaded shared ownership | Multi-threaded shared ownership |
 
 Rust makes you choose. Go's GC handles both cases transparently (with corresponding overhead).
 
@@ -285,7 +285,7 @@ impl Counter {
 }
 ```
 
-Key difference: in Rust, the mutex *contains* the data. You can't access the data without locking. In Go, the mutex is separate—you can forget to lock.
+Key difference: in Rust, the mutex _contains_ the data. You can't access the data without locking. In Go, the mutex is separate—you can forget to lock.
 
 ### RwLock<T>
 
@@ -309,14 +309,14 @@ Same as Go's `sync.RWMutex`.
 
 ## Choosing the Right Pointer
 
-| Need | Use | Notes |
-|------|-----|-------|
-| Heap allocation, single owner | `Box<T>` | Simplest |
-| Shared ownership, single thread | `Rc<T>` | No mutation |
-| Shared ownership, multi thread | `Arc<T>` | No mutation |
-| Shared + mutable, single thread | `Rc<RefCell<T>>` | Runtime borrow checks |
-| Shared + mutable, multi thread | `Arc<Mutex<T>>` | Locking overhead |
-| Read-heavy shared mutable | `Arc<RwLock<T>>` | Readers don't block each other |
+| Need                            | Use              | Notes                          |
+| ------------------------------- | ---------------- | ------------------------------ |
+| Heap allocation, single owner   | `Box<T>`         | Simplest                       |
+| Shared ownership, single thread | `Rc<T>`          | No mutation                    |
+| Shared ownership, multi thread  | `Arc<T>`         | No mutation                    |
+| Shared + mutable, single thread | `Rc<RefCell<T>>` | Runtime borrow checks          |
+| Shared + mutable, multi thread  | `Arc<Mutex<T>>`  | Locking overhead               |
+| Read-heavy shared mutable       | `Arc<RwLock<T>>` | Readers don't block each other |
 
 ### Decision Tree
 
@@ -342,14 +342,14 @@ Go gives you `*T` and expects you to use mutexes correctly. Rust gives you a typ
 
 It's more verbose. It's also harder to get wrong.
 
-| Rust | Go-ish Equivalent | Key Insight |
-|------|-------------------|-------------|
-| `Box<T>` | `*T` | Single owner, heap allocated |
-| `Rc<T>` | Shared `*T` (GC tracked) | Multiple owners, single thread |
-| `Arc<T>` | Shared `*T` (GC tracked) | Multiple owners, thread-safe |
-| `RefCell<T>` | Mutable shared state | Runtime borrow checking |
-| `Mutex<T>` | `sync.Mutex` guarding data | Lock owns the data |
-| `RwLock<T>` | `sync.RWMutex` | Multiple readers, one writer |
+| Rust         | Go-ish Equivalent          | Key Insight                    |
+| ------------ | -------------------------- | ------------------------------ |
+| `Box<T>`     | `*T`                       | Single owner, heap allocated   |
+| `Rc<T>`      | Shared `*T` (GC tracked)   | Multiple owners, single thread |
+| `Arc<T>`     | Shared `*T` (GC tracked)   | Multiple owners, thread-safe   |
+| `RefCell<T>` | Mutable shared state       | Runtime borrow checking        |
+| `Mutex<T>`   | `sync.Mutex` guarding data | Lock owns the data             |
+| `RwLock<T>`  | `sync.RWMutex`             | Multiple readers, one writer   |
 
 ---
 
