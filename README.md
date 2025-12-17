@@ -16,12 +16,12 @@ You know how to program. You know Go. This pamphlet teaches you what's _differen
 
 ## Who This Is For
 
-Go developers wanting to learn Rust.
+Go developers wanting to learn Rust. Rust might not be very productive compared to Go, but I've found it to be a lot of fun to program.
 
 ## Who This Is Not For
 
 - Complete beginners to programming
-- People with time and attention span to read the entire book. [The Book](https://doc.rust-lang.org/book/) covers it.
+- People with time and attention span to read the entire book. [The Book](https://doc.rust-lang.org/book/) covers it better.
 
 ## How to Read This
 
