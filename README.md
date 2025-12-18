@@ -4,6 +4,8 @@ A condensed guide to Rust for programmers with Go experience.
 
 You know how to program. You know Go. This pamphlet teaches you what's _different_ about Rust. I'm not gonna explain what a variable is, but why the compiler won't let you use one after you've moved it.
 
+I've taken inspiration, structure and examples from the Rust book by Steve Klabnik, Carol Nichols, and Chris Krycho.
+
 ## Chapters
 
 1. **[Setup & Syntax](01-setup-and-syntax.md)** - Cargo, syntax differences, type mappings
@@ -20,16 +22,11 @@ Go developers wanting to learn Rust. Rust might not be very productive compared 
 
 ## Who This Is Not For
 
-- Complete beginners to programming
-- People with time and attention span to read the entire book. [The Book](https://doc.rust-lang.org/book/) covers it better.
-
-## How to Read This
-
-I'm not gonna explain how to read. You obviously know how to read.
+People with time and attention span to read the entire book. [The Book](https://doc.rust-lang.org/book/) covers it better.
 
 ## Building
 
-This is plain Markdown. Read it directly, or use your preferred tool to convert to PDF/HTML.
+This is plain Markdown.
 
 ## License
 
