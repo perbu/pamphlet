@@ -5,7 +5,7 @@ You know how to install things and use a terminal. Here's what's different.
 ## Cargo: Your New Best Friend
 
 Cargo is `go` but better. It handles building, dependencies, testing, and more. Notice how I assume that
-everything that has anything to do with Rust is superior. This is very common.
+everything that has anything to do with Rust is superior.
 
 ```bash
 cargo new myproject     # Creates new project (like go mod init, but also creates main.go)
