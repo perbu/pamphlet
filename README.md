@@ -18,6 +18,11 @@ I've taken inspiration, structure and examples from the Rust book by Steve Klabn
 6. **[Concurrency](06-concurrency.md)** - Send/Sync, fearless concurrency
 7. **[Quick Reference](07-quick-reference.md)** - Cheat sheets, gotchas, survival guide
 
+## Why Rust?
+
+For many people, they pick Rust because it is fast and safe. And while performance is important, for me
+it is mostly about compatibilty with C. Every time you want to interact with the operating system or hardware, with Go, you have to have somebody make native Go code. With Rust, you can easily wrap C code and use it in your Rust program. Concretely, I wanted access to RDMA over Fabric, which you can just forget about in Go.
+
 ## Who This Is For
 
 Go developers wanting to learn Rust. Rust might not be very productive compared to Go, but I've found it to be a lot of fun to program.
