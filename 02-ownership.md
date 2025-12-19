@@ -19,7 +19,6 @@ In C, you call `malloc` and `free` manually. You pay for this with:
 - Use-after-free bugs
 - Double-free bugs
 - Memory leaks
-- Your sanity
 
 Rust's ownership system is a third way: the compiler tracks who owns each piece of memory and inserts cleanup code at compile time. No runtime GC, no manual `free`, no memory bugs, at least not in _safe_ code.
 
@@ -52,9 +51,9 @@ fn main() {
 }   // s goes out of scope here, String is freed automatically
 ```
 
-This is like Go's `defer` but automatic and tied to scope. Rust calls this "dropping" and the mechanism is the `Drop` trait (which we'll cover later).
+This is like Go's `defer` but automatic and tied to scope. Rust calls this "dropping" and the mechanism is the `Drop` trait. Traits will be covered later, for now just know that it's a way to define behavior.
 
-In Go terms, imagine if every variable had an invisible `defer cleanup()` that ran when the variable went out of scope. That's Rust, except it's not deferred to function end—it's scoped precisely.
+In Go terms, imagine if every variable had an invisible `defer cleanup()` that ran when the variable went out of scope. That's Rust, except it's not deferred to function end; it's scoped precisely.
 
 ### Rule 3: Ownership Moves
 
@@ -71,7 +70,7 @@ In Go, this would copy a pointer or the string header. Both variables would work
 
 Why? Because if both `s1` and `s2` owned the String, who frees it? Rust's answer: don't allow that situation.
 
-## Move Semantics in Depth
+## Move Semantics
 
 Let's compare Go and Rust on what looks like the same code:
 
