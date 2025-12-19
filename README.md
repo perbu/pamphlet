@@ -4,6 +4,8 @@ A condensed guide to Rust for programmers with Go experience.
 
 You know how to program. You know Go. This pamphlet teaches you what's _different_ about Rust. I'm not gonna explain what a variable is, but why the compiler won't let you use one after you've moved it.
 
+Coming from Go, Rust is a bit weird. It is very explicit about certain things, but also uses a lot of inference for other things. It seems that the pattern is "be explicit at boundaries, infer locally". So, it'll infer as much as it can, but if it can help you avoid mistakes, it'll require you to be explicit.
+
 I've taken inspiration, structure and examples from the Rust book by Steve Klabnik, Carol Nichols, and Chris Krycho.
 
 ## Chapters
